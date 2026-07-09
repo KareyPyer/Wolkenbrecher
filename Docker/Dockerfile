@@ -59,10 +59,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # =============================================================================
 
 # --- Julia 1.9.3 -----------------------------------------------------------
-RUN wget -q https://julialang-s3.julialang.org/bin/linux/x64/1.9/julia-1.9.3-linux-x86_64.tar.gz && \
-    tar -xzf julia-*.tar.gz -C /opt && \
-    ln -s /opt/julia-*/bin/julia /usr/local/bin/julia && \
-    rm -f julia-*.tar.gz
+#RUN wget -q https://julialang-s3.julialang.org/bin/linux/x64/1.9/julia-1.9.3-linux-x86_64.tar.gz && \
+    #tar -xzf julia-*.tar.gz -C /opt && \
+    #ln -s /opt/julia-*/bin/julia /usr/local/bin/julia && \
+    #rm -f julia-*.tar.gz
+RUN curl -fsSL https://install.julialang.org | sh
 
 # --- Clozure Common Lisp ----------------------------------------------------
 RUN curl -sL -o ccl.tar.gz \
