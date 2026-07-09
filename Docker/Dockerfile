@@ -63,7 +63,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     #tar -xzf julia-*.tar.gz -C /opt && \
     #ln -s /opt/julia-*/bin/julia /usr/local/bin/julia && \
     #rm -f julia-*.tar.gz
-RUN curl -fsSLy https://install.julialang.org | sh
+#RUN curl -fsSL https://install.julialang.org | sh
 
 # --- Clozure Common Lisp ----------------------------------------------------
 RUN curl -sL -o ccl.tar.gz \
