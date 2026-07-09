@@ -1,5 +1,5 @@
 # =============================================================================
-# Dockerfile fusionné : Gemini (prioritaire) + Tycho
+# 090726 - Dockerfile fusionné : Gemini (prioritaire) + Tycho
 # Base : jupyter/datascience-notebook (déjà équipé de Python, R, JupyterLab,
 #        conda, et de nombreux packages data-science)
 # =============================================================================
