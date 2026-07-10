@@ -1,0 +1,78 @@
+FROM datascience-osint:latest
+
+USER root
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+## Outils de développement
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        cmake \
+        clang \
+        gdb \
+        valgrind \
+        ripgrep \
+        fd-find \
+        silversearcher-ag \
+        shellcheck \
+        universal-ctags \
+        sqlite3 \
+        redis-tools \
+        postgresql-client \
+        openssh-client \
+        openssh-server \
+        rsync \
+        parallel \
+        graphviz \
+    && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+## Java
+RUN apt-get update && \
+    apt-get install -y \
+        openjdk-21-jdk
+
+## Lisp
+RUN apt-get install -y \
+    sbcl \
+    clisp
+
+## Clojure
+RUN curl -L https://download.clojure.org/install/linux-install.sh \
+        -o install-clojure.sh && \
+    chmod +x install-clojure.sh && \
+    ./install-clojure.sh && \
+    rm install-clojure.sh
+
+## Emacs
+RUN apt-get install -y \
+    emacs-nox \
+    exuberant-ctags
+
+## Python
+RUN pip install --no-cache-dir \
+    poetry \
+    hatch \
+    ruff \
+    black \
+    isort \
+    mypy \
+    pyright \
+    pytest \
+    pytest-cov \
+    ipdb
+
+## GitHub CLI
+RUN (type -p wget >/dev/null || apt install wget -y) \
+ && mkdir -p -m 755 /etc/apt/keyrings \
+ && wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+ | tee /etc/apt/keyrings/githubcli.gpg >/dev/null \
+ && chmod go+r /etc/apt/keyrings/githubcli.gpg \
+ && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli.gpg] https://cli.github.com/packages stable main" \
+ | tee /etc/apt/sources.list.d/github-cli.list >/dev/null \
+ && apt update \
+ && apt install gh -y
+
+
