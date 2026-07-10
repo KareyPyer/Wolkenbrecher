@@ -31,7 +31,9 @@ apt-get install -y --no-install-recommends \
     openssh-server \
     rsync \
     parallel \
-    graphviz
+    graphviz \
+    nodejs \
+    npm
 
 echo "=== Java ==="
 apt-get install -y openjdk-21-jdk
@@ -49,11 +51,15 @@ echo "=== Emacs ==="
 apt-get install -y emacs-nox exuberant-ctags
 
 echo "=== Python (Outils) ==="
-# NOTE: Sur les systèmes récents (Debian 12 / Ubuntu 23.04+), l'installation globale 
-# via pip est bloquée par défaut (PEP 668). Si vous obtenez une erreur "externally-managed-environment",
-# remplacez la commande par : pip install --break-system-packages --no-cache-dir ...
-# ou utilisez pipx / un environnement virtuel.
-pip install --no-cache-dir \
+# Conformément aux recommandations Debian/Ubuntu (PEP 668), nous utilisons un environnement 
+# virtuel pour installer les paquets tiers sans interférer avec le python système.
+VENV_PATH="/opt/python-dev-tools"
+
+echo "Création de l'environnement virtuel dans $VENV_PATH..."
+python3 -m venv "$VENV_PATH"
+
+echo "Installation des outils Python dans le venv..."
+"$VENV_PATH/bin/pip" install --no-cache-dir \
     poetry \
     hatch \
     ruff \
@@ -64,6 +70,22 @@ pip install --no-cache-dir \
     pytest \
     pytest-cov \
     ipdb
+
+echo "Création des liens symboliques pour rendre les outils accessibles globalement..."
+for bin_file in "$VENV_PATH/bin"/*; do
+    bin_name=$(basename "$bin_file")
+    
+    # On exclut les binaires internes du venv (python, pip, activate, etc.) 
+    # pour ne pas écraser ceux du système.
+    case "$bin_name" in
+        python*|pip*|activate*|Activate*|wheel)
+            continue
+            ;;
+        *)
+            ln -sf "$bin_file" "/usr/local/bin/$bin_name"
+            ;;
+    esac
+done
 
 echo "=== GitHub CLI ==="
 # Installation de wget si absent
